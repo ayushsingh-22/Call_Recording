@@ -58,11 +58,8 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-
-        // Initialize StartRecording
         startRecording = StartRecording(this)
 
-        // Request permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
             ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED ||
             ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
@@ -75,13 +72,11 @@ class MainActivity : ComponentActivity() {
             ), REQUEST_CODE)
         }
 
-        // Register BroadcastReceiver
         val filter = IntentFilter().apply {
             addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED)
         }
         registerReceiver(CallReceiver(), filter)
 
-        // Load recordings
         loadRecordings()
     }
 
@@ -101,20 +96,18 @@ class MainActivity : ComponentActivity() {
     private fun openRecording(context: Context, filePath: String) {
         val file = File(filePath)
         if (file.exists()) {
-            // Create a URI for the file
+
             val uri: Uri = FileProvider.getUriForFile(
                 context,
                 "${context.packageName}.provider",
                 file
             )
 
-            // Create an Intent to view the file
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(uri, "audio/3gpp")
                 flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
             }
 
-            // Start the activity to open the file
             try {
                 context.startActivity(Intent.createChooser(intent, "Open with"))
             } catch (e: ActivityNotFoundException) {
@@ -136,13 +129,13 @@ class MainActivity : ComponentActivity() {
             val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
             when (state) {
                 TelephonyManager.EXTRA_STATE_OFFHOOK -> {
-                    // Start recording when the call is picked up
+
                     startRecording.startRecording()
                 }
                 TelephonyManager.EXTRA_STATE_IDLE -> {
-                    // Stop recording when the call ends
+
                     startRecording.stopRecording()
-                    loadRecordings() // Refresh the list of recordings
+                    loadRecordings()
                 }
             }
         }
