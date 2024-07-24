@@ -47,6 +47,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     content = { innerPadding ->
+
                         homeScreenDesign.Design(
                             modifier = Modifier.padding(innerPadding),
                             recordings = recordings
